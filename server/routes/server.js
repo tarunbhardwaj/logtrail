@@ -1,6 +1,9 @@
 function convertToClientFormat(config, esResponse) {
   var clientResponse = [];
   var hits = esResponse.hits.hits;
+  function mapIndex(obj,i) {return obj[i]};
+  // 'a.b.etc'.split('.').reduce(index, obj)
+
   //console.log(hits);
   for (var i = 0; i < hits.length; i++) {
     var event = {};
@@ -11,11 +14,11 @@ function convertToClientFormat(config, esResponse) {
       var flatten = require('flat');
       source = flatten(source);
     }
-    event['timestamp'] = source[config.fields.mapping['timestamp']];
-    event['display_timestamp'] = source[config.fields.mapping['display_timestamp']];
-    event['hostname'] = source[config.fields.mapping['hostname']];
-    event['message'] = source[config.fields.mapping['message']];
-    event['program'] = source[config.fields.mapping['program']];
+    event['timestamp'] = config.fields.mapping['timestamp'].split('.').reduce(mapIndex, source);
+    event['display_timestamp'] = config.fields.mapping['display_timestamp'].split('.').reduce(mapIndex, source);
+    event['hostname'] = config.fields.mapping['hostname'].split('.').reduce(mapIndex, source);
+    event['message'] = config.fields.mapping['message'].split('.').reduce(mapIndex, source);
+    event['program'] = config.fields.mapping['program'].split('.').reduce(mapIndex, source);
     clientResponse.push(event);
   }
   return clientResponse;
