@@ -38,6 +38,10 @@ var exclude = Object.keys(pkg.devDependencies).map(function (name) {
   return path.join('node_modules', name);
 });
 
+var include = Object.keys(pkg.dependencies).map(function (name) {
+  return path.join('node_modules', name);
+});
+
 function syncPluginTo(dest, done) {
   mkdirp(dest, function (err) {
     if (err) return done(err);
@@ -52,6 +56,7 @@ function syncPluginTo(dest, done) {
           .recursive(true)
           .set('delete')
           .exclude(exclude)
+          .include(include)
           .output(function (data) {
             process.stdout.write(data.toString('utf8'));
           });
